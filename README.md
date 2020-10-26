@@ -1,6 +1,8 @@
 # Ecom 🛒
 
-This is the backend of an ecommerce app im building. Currently able register and login users, will be adding products soon and many more.
+This is the backend of an ecommerce app im building. Currently able to register and login users, will be adding products soon and many more.
+
+Will be building a react native client for this server.
 
 ### Tech 🛠
 
