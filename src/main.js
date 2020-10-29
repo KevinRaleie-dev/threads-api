@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import auth from './routes/auth/auth.route';
 import users from './routes/users/users.route';
+import products from './routes/products/products.route';
 import {
     connection
 } from './db/connection';
@@ -21,6 +22,7 @@ const main = () => {
     app.use(bodyParser.json());
     app.use('/auth', auth);
     app.use('/users', users);
+    app.use('/products', products);
 
     app.listen(port, () => {
         console.log(`Server runninng on http://localhost:${port}`);

@@ -6,7 +6,7 @@ import {
 import {
     registerValidation,
     loginValidation
-} from "../../validation";
+} from "./validation";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
