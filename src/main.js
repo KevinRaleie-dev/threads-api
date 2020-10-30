@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import auth from './routes/auth/auth.route';
 import users from './routes/users/users.route';
 import products from './routes/products/products.route';
@@ -17,6 +18,7 @@ const main = () => {
 
     connection(db);
 
+    app.use(cors())
     app.use(morgan('tiny'));
     app.use(helmet());
     app.use(bodyParser.json());
