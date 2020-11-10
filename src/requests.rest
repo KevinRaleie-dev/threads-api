@@ -1,0 +1,15 @@
+POST http://localhost:3000/users/create_product
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmFhNGNkZWVmN2E5NDMzNGMwYzQ1OWEiLCJ1c2VybmFtZSI6IlRoZSBCb2kiLCJpYXQiOjE2MDUwMjQ5NTh9.37ncxLcS6QYRPjn_4nw3_DaRYI9JzeTMvTIBIEbgB6U
+Content-Type: application/json
+
+{
+    "name": "lawn chair",
+    "description": "black and grey chair",
+    "price": 100,
+    "stock": 4,
+    "image": "chair.jpg"
+}
+
+###
+GET http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmFhNGNkZWVmN2E5NDMzNGMwYzQ1OWEiLCJ1c2VybmFtZSI6IlRoZSBCb2kiLCJpYXQiOjE2MDUwMjQ5NTh9.37ncxLcS6QYRPjn_4nw3_DaRYI9JzeTMvTIBIEbgB6U

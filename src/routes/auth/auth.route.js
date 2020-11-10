@@ -8,6 +8,7 @@ import {
     loginValidation
 } from "./validation";
 import jwt from "jsonwebtoken";
+import { ACCESS_TOKEN } from '../../helpers/index';
 
 const router = express.Router();
 
@@ -92,14 +93,15 @@ router.post("/login", async (req, res) => {
     // if user is logged in, send a token
     //   create the token
     // when i get the token in the client im going to store it local storage for now
-    // then later look for other ways of storing it
-    const secret = "myjwtsecret";
-    const token = jwt.sign({
+    // then later look for other ways of storing
+    const loggedInUser = {
         _id: user._id,
         username: user.username
-    }, secret);
+    };
+    
+    const token = jwt.sign(loggedInUser, ACCESS_TOKEN);
 
-    return res.json({
+    return res.status(200).json({
         token: token
     });
 

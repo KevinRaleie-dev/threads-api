@@ -6,8 +6,6 @@ export const connection = async (db) => {
         await mongoose.connect(db, {
             useNewUrlParser: true,
             useUnifiedTopology: true
-        }).then(() => {
-            console.log('database connected');
         });
 
     } catch (error) {
