@@ -91,13 +91,15 @@ router.post("/login", async (req, res) => {
     }
     // if user is logged in, send a token
     //   create the token
+    // when i get the token in the client im going to store it local storage for now
+    // then later look for other ways of storing it
     const secret = "myjwtsecret";
     const token = jwt.sign({
         _id: user._id,
         username: user.username
     }, secret);
 
-    return res.header("auth-token", token).json({
+    return res.json({
         token: token
     });
 
