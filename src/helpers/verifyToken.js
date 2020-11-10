@@ -1,23 +1,22 @@
 import jwt from 'jsonwebtoken';
+import { ACCESS_TOKEN } from '../helpers/index'
 
-export const auth = async (req, res) => {
-    const token = req.header('auth-token');
+export const authenticate = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
 
-    if (!token) {
-        return res.status(401).json({
-            message: 'access denied'
-        });
+    // either return undefined or return a token
+    const token = authHeader && authHeader.split(' ')[1];
 
-    } else if(token) {
-
-        try {
-            const verifiedToken = await jwt.verify(token, "myjwtsecret");
-            return req.user = verifiedToken;
-        } catch (error) {
-            return res.status(500).json({
-                message: error.message,
-            });
-        }
+    if (token == null) {
+        return res.sendStatus(401);
     }
 
+    jwt.verify(token, ACCESS_TOKEN, (err, loggedInUser) => {
+        if(err) {
+            return res.sendStatus(403)
+        }
+
+        req.loggedInUser = loggedInUser;
+        next();
+    })
 }
