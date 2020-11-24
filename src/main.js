@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -11,8 +12,8 @@ import {
 } from './db/connection';
 
 const app = express();
-const port = 3000 || process.env.PORT;
-const db = 'mongodb://localhost:27017/ecom';
+const port = process.env.PORT || 3000;
+const db = process.env.MONGO_DB
 
 const main = () => {
 

@@ -1,6 +1,5 @@
 import express from 'express';
 import { User } from '../../models/User';
-import { Product } from '../../models/Product';
 import {authenticate} from '../../helpers/verifyToken';
 
 const router = express.Router();
@@ -25,38 +24,6 @@ router.get('/:id', async (req, res) => {
                             }));
     
     return findUserById;
-});
-
-// create a product
-router.post('/create_product', authenticate, async (req, res) => {
-    try {
-        const product = new Product({
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-            stock: req.body.stock,
-            image: req.body.image,
-            owner: req.loggedInUser._id
-        });
-        await product.save();
-
-        // const getUser = req.loggedInUser._id;
-
-        const user = await User.findById({_id: product.owner});
-        user.products.push(product);
-
-        await user.save();
-
-        res.status(201).json({
-            success: true,
-            data: product
-        })
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: `Error: ${error.message}`
-        })
-    }
 });
 
 // update a user by id
