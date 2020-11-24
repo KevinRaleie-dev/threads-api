@@ -1,31 +1,35 @@
-import mongoose  from 'mongoose';
+import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const productSchema = new Schema({
+const productSchema = new Schema(
+  {
     name: {
-        type: String,
+      type: String,
     },
     description: {
-        type: String
+      type: String,
     },
     price: {
-        type: Number
+      type: Number,
     },
     stock: {
-        type: Number
+      type: Number,
     },
     image: {
-        type: String
+      type: String,
     },
     owner: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    }
-}, {
-    timestamps: true
-});
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-export const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
 
+export default Product;

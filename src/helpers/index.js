@@ -1,3 +1,5 @@
 import 'dotenv/config';
 
-export const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+const { ACCESS_TOKEN } = process.env;
+
+export default ACCESS_TOKEN;
