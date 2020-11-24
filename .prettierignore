@@ -1,0 +1,3 @@
+# Ignore aritfacts:
+build
+coverage
