@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import express from 'express';
 import authenticate from '../../helpers/verifyToken';
 import Product from '../../models/Product';
@@ -22,13 +23,7 @@ router.post('/create_product', authenticate, async (req, res) => {
   // try adding the product
   try {
     const product = new Product({
-      name: req.body.name,
-      description: req.body.description,
-      price: req.body.price,
-      stock: req.body.stock,
-      image: req.body.image,
-      // here i have to pass in the user that create the product
-      // eslint-disable-next-line no-underscore-dangle
+      ...req.body,
       owner: req.loggedInUser._id,
     });
 
@@ -53,5 +48,7 @@ router.post('/create_product', authenticate, async (req, res) => {
     });
   }
 });
+
+// TODO: update and delete product thats been added by you.
 
 module.exports = router;
