@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "watch": "tsc -w",
+    "start": "node dist/main.js",
+    "dev2": "modemon dist/main.js",
     "dev": "nodemon --exec babel-node src/main.js",
     "lint": "./node_modules/.bin/eslint ./src",
     "pretty": "prettier --write '**/*.{js,json}' '!node_modules/**'",
@@ -23,6 +26,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.7",
     "morgan": "^1.10.0",
+    "ts-node": "^9.1.1",
     "yup": "^0.29.3"
   },
   "devDependencies": {
@@ -34,6 +38,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "nodemon": "^2.0.4",
-    "prettier": "2.2.0"
+    "prettier": "2.2.0",
+    "typescript": "^4.1.3"
   }
 }
