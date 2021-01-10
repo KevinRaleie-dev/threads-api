@@ -1,33 +1,30 @@
-import 'dotenv/config';
+import 'reflect-metadata';
 import express from 'express';
-import morgan from 'morgan';
-import helmet from 'helmet';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import auth from './routes/auth/auth.route';
-import users from './routes/users/users.route';
-import products from './routes/products/products.route';
-import connection from './db/connection';
+import { ApolloServer } from 'apollo-server-express';
+import { buildSchema } from 'type-graphql';
+import { HelloResolver } from './resolvers/hello';
 
-const app = express();
-const port = process.env.PORT || 3000;
-const db = process.env.MONGO_DB;
+const PORT = 4000;
 
-const main = () => {
-  connection(db);
+async function main() {
+  const app = express();
 
-  app.use(cors());
-  app.use(morgan('tiny'));
-  app.use(helmet());
-  app.use(bodyParser.json());
-  app.use('/auth', auth);
-  app.use('/users', users);
-  app.use('/products', products);
-
-  app.listen(port, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Server runninng on http://localhost:${port}`);
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers:[
+        HelloResolver
+      ],
+      validate: false
+    }),
+    // add context here
   });
-};
+
+  apolloServer.applyMiddleware({ app });
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}${apolloServer.graphqlPath}`);
+  })
+
+}
 
 main();
