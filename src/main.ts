@@ -9,8 +9,9 @@ import { AppContext } from './utils/context';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { HelloResolver } from './resolvers/hello';
+import { UserResolver } from './resolvers/user';
 
-// const PORT: number = 4000;
+const PORT: number = 4000;
 
 const redisStore = connectRedis(session);
 const redis = new Redis()
@@ -30,18 +31,19 @@ async function main() {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10 years
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'development' ? false : true, // setting it to true enables it to be used with https
+      secure: false //TODO: process.env.NODE_ENV === 'development' ? false : true, // setting it to true enables it to be used with https
     },
-    secret: process.env.COOKIE_SECRET!,
+    secret: 'superSecretCookie',
     saveUninitialized: false,
     resave: false,
-    name: process.env.COOKIE_NAME // TODO: change the name of the cookie later
+    name: 'cid' // TODO: change the name of the cookie later and add to .env
 
   }))
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers:[
-        HelloResolver
+        HelloResolver,
+        UserResolver
       ],
       validate: false
     }),
@@ -50,8 +52,8 @@ async function main() {
 
   apolloServer.applyMiddleware({ app });
 
-  app.listen(Number(process.env.PORT), () => {
-    console.log(`Server is running on http://localhost:${Number(process.env.PORT)}${apolloServer.graphqlPath}`);
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}${apolloServer.graphqlPath}`);
   })
 
 }
