@@ -106,4 +106,21 @@ async register(
 		}
 
 	}
+
+	@Mutation(() => Boolean)
+	logout(
+		@Ctx() { req, res }: AppContext
+	) {
+		return new Promise((resolve) => {
+			req.session.destroy((err: any) => {
+				if(err) {
+					resolve(false);
+					return;
+				}
+
+				res.clearCookie('cid');
+				resolve(true);
+			})
+		})
+	}
 }
