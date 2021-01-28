@@ -7,7 +7,7 @@ import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { AppContext } from "../utils/context";
 
 @Resolver()
-export class UserResolver {
+export class AuthResolver {
 
 @Mutation(() => AuthResponse)
 async register(

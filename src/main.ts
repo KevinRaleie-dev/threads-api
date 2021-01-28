@@ -9,7 +9,8 @@ import { AppContext } from './utils/context';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { HelloResolver } from './resolvers/hello';
-import { UserResolver } from './resolvers/user';
+import { AuthResolver } from './resolvers/auth';
+import { MeResolver } from './resolvers/me';
 
 const PORT: number = 4000;
 
@@ -43,7 +44,8 @@ async function main() {
     schema: await buildSchema({
       resolvers:[
         HelloResolver,
-        UserResolver
+        AuthResolver,
+        MeResolver
       ],
       validate: false
     }),
