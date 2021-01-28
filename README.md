@@ -9,7 +9,7 @@ frontend of the application [here](https://github.com/KevinRaleie-dev/ecom-clien
 
 I went with the PERN + GraphQL stack on this simply because im familiar with it.
 
-    * PostgreSQL
+    * PostgreSQL, Redis
     * Node / Express with TypeScript
     * React on the frontend
     * GraphQL
