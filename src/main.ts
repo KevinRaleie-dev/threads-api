@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
 import session from 'express-session';
 import Redis from 'ioredis';
 import { connection } from './database/database';
@@ -23,6 +24,10 @@ async function main() {
 
   const app = express();
 
+  app.use(cors({
+    origin: 'http://localhost:8080',
+    credentials: true
+  }));
   app.set('trust-proxy', 1);
 
   app.use(
@@ -39,7 +44,8 @@ async function main() {
     resave: false,
     name: 'cid' // TODO: change the name of the cookie later and add to .env
 
-  }))
+  }));
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers:[
@@ -52,7 +58,7 @@ async function main() {
     context: ({req, res}): AppContext => ({req, res})
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}${apolloServer.graphqlPath}`);
