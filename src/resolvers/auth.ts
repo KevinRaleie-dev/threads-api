@@ -5,6 +5,7 @@ import { LoginUserInput } from '../utils/inputs/loginInput';
 import { AuthResponse } from '../utils/lib/AuthResponse';
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { AppContext } from "../utils/context";
+import { validationSchema } from "../utils/validation-schema";
 
 @Resolver()
 export class AuthResolver {
@@ -13,8 +14,24 @@ export class AuthResolver {
 async register(
 	@Arg('data') data: RegisterUserInput
 	): Promise<AuthResponse> {
-	
-		// check if user with email exists
+
+		try {
+			await validationSchema.validate({email: data.email, username: data.username, password: data.password});
+		} catch (error) {
+			if(error.message.includes('password') || error.message.includes('email') || error.message.includes('username')) {
+				return {
+					errors: [
+						{
+							field: error.path,
+							message: error.message
+						}
+					]
+				}
+			}
+		}
+
+
+		// check if user with email exists in database
 		const checkEmail = await User.findOne({where: {
 			email: data.email
 		}});
@@ -24,7 +41,7 @@ async register(
 				errors: [
 					{
 						field: 'email',
-						message: 'User already exists'
+						message: 'Account already exists'
 					}
 				]
 			}
@@ -41,7 +58,7 @@ async register(
 						field: 'username',
 						message: 'Username already taken, try a different one'
 					}
-			]
+				]
 			}
 		}
 
@@ -51,6 +68,7 @@ async register(
 		const salt = await bcrypt.genSalt(10);
 		const hashPassword = await bcrypt.hash(data.password, salt);
 
+		// This is two sql commands
 		const user = await User.create({
 			email: data.email,
 			username: data.username,
@@ -99,6 +117,7 @@ async register(
 
 		// if everything matches, supply the user with a cookie
 
+		// Add the cookie
 		req.session.userId = user.id;
 
 		return {
