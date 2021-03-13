@@ -71,7 +71,7 @@ async register(
 		// This is two sql commands
 		const user = await User.create({
 			email: data.email,
-			username: data.username,
+			username: data.username.toLowerCase().trim(),
 			password: hashPassword
 		})
 		.save()

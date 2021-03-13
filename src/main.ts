@@ -12,6 +12,7 @@ import { buildSchema } from 'type-graphql';
 import { HelloResolver } from './resolvers/hello';
 import { AuthResolver } from './resolvers/auth';
 import { MeResolver } from './resolvers/me';
+import { UserResolver } from './resolvers/user';
 
 const PORT: number = 4000;
 
@@ -51,7 +52,8 @@ async function main() {
       resolvers:[
         HelloResolver,
         AuthResolver,
-        MeResolver
+        MeResolver,
+        UserResolver,
       ],
       validate: false
     }),
