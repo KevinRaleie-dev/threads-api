@@ -7,7 +7,7 @@
     "watch": "tsc -w",
     "start": "node dist/main.js",
     "dev": "nodemon --exec ts-node src/main.ts",
-    "lint": "./node_modules/.bin/eslint ./src",
+    "lint": "eslint 'src/**/*.{js,ts}' --quiet --fix",
     "pretty": "prettier --write '**/*.{js,json}' '!node_modules/**'",
     "postpretty": "yarn lint --fix",
     "gen": " npx ts-node ./node_modules/.bin/typeorm migration:generate -n UserRefactoring",
@@ -50,11 +50,15 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^8.5.0",
-    "eslint": "^7.14.0",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "eslint": "^7.22.0",
     "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
     "nodemon": "^2.0.4",
-    "prettier": "2.2.0",
+    "prettier": "^2.2.1",
     "typescript": "^4.1.3"
   }
 }
