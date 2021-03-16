@@ -4,15 +4,16 @@ import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
 import Redis from 'ioredis';
-import { connection } from './database/database';
 import connectRedis from 'connect-redis';
-import { AppContext } from './utils/context';
+import { AppContext } from './types/context';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
-import { HelloResolver } from './resolvers/hello';
-import { AuthResolver } from './resolvers/auth';
-import { MeResolver } from './resolvers/me';
-import { UserResolver } from './resolvers/user';
+import { HelloResolver } from './resolvers/hello-resolver';
+import { AuthResolver } from './resolvers/auth-resolver';
+import { MeResolver } from './resolvers/me-resolver';
+import { UserResolver } from './resolvers/user-resolver';
+import { ItemResolver } from './resolvers/item-resolver';
+import { createConnection } from 'typeorm';
 
 const PORT: number = 4000;
 
@@ -20,8 +21,6 @@ const redisStore = connectRedis(session);
 const redis = new Redis()
 
 async function main() {
-
-  connection(); // ORM connection to the database
 
   const app = express();
 
@@ -54,6 +53,7 @@ async function main() {
         AuthResolver,
         MeResolver,
         UserResolver,
+        ItemResolver
       ],
       validate: false
     }),
@@ -62,9 +62,12 @@ async function main() {
 
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}${apolloServer.graphqlPath}`);
-  })
+  createConnection().then(() => {
+    console.log('Creating databse connection...');
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}${apolloServer.graphqlPath}`);
+    })
+  }).catch((err) => console.log(err));
 
 }
 

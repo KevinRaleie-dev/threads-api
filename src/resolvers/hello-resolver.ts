@@ -5,6 +5,6 @@ export class HelloResolver {
     
     @Query(() => String)
     hello() {
-        return `hello kevin`
+        return `hello geek kulcha`
     }
 }

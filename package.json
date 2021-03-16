@@ -6,10 +6,13 @@
   "scripts": {
     "watch": "tsc -w",
     "start": "node dist/main.js",
-    "dev": "nodemon dist/main.js",
+    "dev": "nodemon --exec ts-node src/main.ts",
     "lint": "./node_modules/.bin/eslint ./src",
     "pretty": "prettier --write '**/*.{js,json}' '!node_modules/**'",
-    "postpretty": "yarn lint --fix"
+    "postpretty": "yarn lint --fix",
+    "gen": " npx ts-node ./node_modules/.bin/typeorm migration:generate -n UserRefactoring",
+    "create": "typeorm migration:create -n ItemRefactoring -d 'src/migrations'",
+    "drop-schema": "typeorm schema:drop"
   },
   "keywords": [],
   "author": "",

@@ -1,11 +1,11 @@
 import { User } from "../entities/User";
 import bcrypt from 'bcryptjs';
-import { RegisterUserInput } from '../utils/inputs/registerInput';
-import { LoginUserInput } from '../utils/inputs/loginInput';
-import { AuthResponse } from '../utils/lib/AuthResponse';
+import { RegisterUserInput } from '../inputs/registerInput';
+import { LoginUserInput } from '../inputs/loginInput';
+import { AuthResponse } from '../responses/authResponse';
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
-import { AppContext } from "../utils/context";
-import { validationSchema } from "../utils/validation-schema";
+import { AppContext } from "../types/context";
+import { validationSchema } from "../responses/validation-schema";
 
 @Resolver()
 export class AuthResolver {

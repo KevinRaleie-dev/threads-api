@@ -1,4 +1,4 @@
-import { AppContext } from "../utils/context";
+import { AppContext } from "../types/context";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../entities/User";
 import { getConnection } from "typeorm";
@@ -31,7 +31,9 @@ export class UserResolver {
         @Arg('username') username: string
     ): Promise<User | null> {
 
-        const findUserByUsername = await User.findOne({where: {
+        const findUserByUsername = await User.findOne({
+            relations: ["items"],
+            where: {
             username: username,
         }});
 
@@ -41,8 +43,6 @@ export class UserResolver {
 
         return findUserByUsername;
 
-    }
-
-    
+    }    
 
 }

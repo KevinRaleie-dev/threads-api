@@ -1,6 +1,6 @@
-import { User } from "../../entities/User";
+import { User } from "../entities/User";
 import { Field, ObjectType} from "type-graphql";
-import { FieldError } from '../error';
+import { FieldError } from './onError';
 
 @ObjectType({description: 'Return an object of either errors or user when authenticating'})
 export class AuthResponse {
