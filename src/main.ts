@@ -14,6 +14,7 @@ import { MeResolver } from './resolvers/me-resolver';
 import { UserResolver } from './resolvers/user-resolver';
 import { ItemResolver } from './resolvers/item-resolver';
 import { createConnection } from 'typeorm';
+import { COOKIE_NAME, COOKIE_SECRET, __prod__ } from './utils/constants';
 
 const PORT = 4000;
 
@@ -38,12 +39,12 @@ async function main() {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10 years
         sameSite: 'lax',
-        secure: false, //TODO: process.env.NODE_ENV === 'development' ? false : true, // setting it to true enables it to be used with https
+        secure: !__prod__,
       },
-      secret: 'superSecretCookie',
+      secret: COOKIE_SECRET,
       saveUninitialized: false,
       resave: false,
-      name: 'cid', // TODO: change the name of the cookie later and add to .env
+      name: COOKIE_NAME,
     }),
   );
 
@@ -52,7 +53,7 @@ async function main() {
       resolvers: [HelloResolver, AuthResolver, MeResolver, UserResolver, ItemResolver],
       validate: false,
     }),
-    context: ({ req, res }): AppContext => ({ req, res }),
+    context: ({ req, res }): AppContext => ({ req, res, redis }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });

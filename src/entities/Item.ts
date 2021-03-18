@@ -1,21 +1,15 @@
-import { Field, ID, Int, ObjectType } from 'type-graphql';
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Common } from '../models/Common.model';
+import { Field, Int, ObjectType } from 'type-graphql';
+import { BeforeInsert, Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { User } from './User';
+import * as uuid from 'uuid';
 
 @ObjectType()
 @Entity()
-export class Item extends BaseEntity {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+export class Item extends Common {
+  @Field()
+  @PrimaryColumn('uuid')
+  id: string;
 
   @Field()
   @Column()
@@ -41,11 +35,8 @@ export class Item extends BaseEntity {
   @ManyToOne(() => User, (user) => user.items)
   user: User;
 
-  @Field()
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @Field()
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @BeforeInsert()
+  addId(): void {
+    this.id = uuid.v4();
+  }
 }

@@ -1,21 +1,15 @@
-import { Field, ID, ObjectType } from 'type-graphql';
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Common } from '../models/Common.model';
+import { Field, ObjectType } from 'type-graphql';
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Item } from './Item';
+import * as uuid from 'uuid';
 
 @ObjectType()
 @Entity()
-export class User extends BaseEntity {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+export class User extends Common {
+  @Field()
+  @PrimaryColumn('uuid')
+  id: string;
 
   @Field()
   @Column()
@@ -36,15 +30,12 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   imageUrl?: string;
 
-  @Field()
-  @CreateDateColumn()
-  createdAt: Date;
+  @BeforeInsert()
+  addId(): void {
+    this.id = uuid.v4();
+  }
 
-  @Field()
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  static findByEmail(email: string) {
+  static findByEmail(email: string): Promise<User | undefined> {
     return this.createQueryBuilder('user').where('user.email = :email', { email }).getOne();
   }
 }

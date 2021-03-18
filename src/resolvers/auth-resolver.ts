@@ -1,11 +1,14 @@
 import { User } from '../entities/User';
 import bcrypt from 'bcryptjs';
+import * as uuid from 'uuid';
 import { RegisterUserInput } from '../inputs/registerInput';
 import { LoginUserInput } from '../inputs/loginInput';
 import { AuthResponse } from '../responses/authResponse';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import { AppContext } from '../types/context';
 import { validationSchema } from '../responses/validation-schema';
+import { FORGOT_PASSWORD } from '../utils/constants';
+import { sendForgotPasswordEmail } from '../utils/sendEmails';
 
 @Resolver()
 export class AuthResolver {
@@ -118,9 +121,9 @@ export class AuthResolver {
   }
 
   @Mutation(() => Boolean)
-  logout(@Ctx() { req, res }: AppContext) {
+  async logout(@Ctx() { req, res }: AppContext): Promise<boolean> {
     return new Promise((resolve) => {
-      req.session.destroy((err: any) => {
+      req.session.destroy((err: unknown) => {
         if (err) {
           resolve(false);
           return;
@@ -130,5 +133,48 @@ export class AuthResolver {
         resolve(true);
       });
     });
+  }
+
+  @Mutation(() => AuthResponse)
+  async forgotPassword(@Arg('email') email: string, @Ctx() { redis }: AppContext): Promise<AuthResponse> {
+    // find the user
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'email',
+            message: 'Sorry this account does not exist.',
+          },
+        ],
+      };
+    }
+
+    // create token and store in redis
+    // create link with the token
+    // send email to user with generated token
+
+    const generatedToken = uuid.v4();
+
+    await redis.set(
+      FORGOT_PASSWORD + generatedToken,
+      user.id,
+      'ex',
+      1000 * 60 * 60 * 24 * 1, // a day
+    );
+
+    await sendForgotPasswordEmail(
+      email,
+      `<a href="http://localhost:8080/change-password/${generatedToken}">Reset password</a>`,
+    );
+
+    return {
+      user,
+    };
   }
 }
