@@ -1,16 +1,14 @@
 import { AppContext } from '../types/context';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { User } from '../entities/User';
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
+import { User } from '@entities/User';
 import { getConnection } from 'typeorm';
+import { isAuth } from '../middleware/isAuth';
 
 @Resolver()
 export class UserResolver {
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
   async updateUserImage(@Ctx() { req }: AppContext, @Arg('imgUrl') imgUrl: string): Promise<boolean> {
-    if (!req.session.userId) {
-      throw new Error('Not authenticated');
-    }
-
     await getConnection()
       .createQueryBuilder()
       .update(User)
