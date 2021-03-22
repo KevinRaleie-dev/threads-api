@@ -1,4 +1,4 @@
-import { User } from '../entities/User';
+import { User } from '@entities/User';
 import bcrypt from 'bcryptjs';
 import * as uuid from 'uuid';
 import { RegisterUserInput } from '../inputs/registerInput';
@@ -9,6 +9,7 @@ import { AppContext } from '../types/context';
 import { validationSchema } from '../responses/validation-schema';
 import { FORGOT_PASSWORD } from '../utils/constants';
 import { sendForgotPasswordEmail } from '../utils/sendEmails';
+import { sanitize } from '../utils/sanitze';
 
 @Resolver()
 export class AuthResolver {
@@ -70,10 +71,13 @@ export class AuthResolver {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(data.password, salt);
 
+    const sanitizedEmail = sanitize(data.email);
+    const sanitizedUsername = sanitize(data.username);
+
     // This is two sql commands
     const user = await User.create({
-      email: data.email,
-      username: data.username.toLowerCase().trim(),
+      email: sanitizedEmail,
+      username: sanitizedUsername,
       password: hashPassword,
     }).save();
 
@@ -173,6 +177,79 @@ export class AuthResolver {
       `<a href="http://localhost:8080/change-password/${generatedToken}">Reset password</a>`,
     );
 
+    return {
+      user,
+    };
+  }
+
+  @Mutation(() => AuthResponse)
+  async changePassword(
+    @Arg('token') token: string,
+    @Arg('newPassword') newPassword: string,
+    @Ctx() { redis }: AppContext,
+  ): Promise<AuthResponse> {
+    try {
+      await validationSchema.validate({ password: newPassword });
+    } catch (error) {
+      if (error.message.includes('password')) {
+        return {
+          errors: [
+            {
+              field: error.path,
+              message: error.message,
+            },
+          ],
+        };
+      }
+    }
+
+    // get the token from redis
+    const key = FORGOT_PASSWORD + token;
+    const userId = await redis.get(key);
+
+    if (!userId) {
+      return {
+        errors: [
+          {
+            field: 'token',
+            message: 'token expired',
+          },
+        ],
+      };
+    }
+
+    const user = await User.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'token',
+            message: 'This user no longer exists.',
+          },
+        ],
+      };
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(newPassword, salt);
+
+    await User.update(
+      {
+        id: userId,
+      },
+      {
+        password: hash,
+      },
+    );
+
+    await redis.del(key);
+
+    // would log in the user here but just gonna return the user and reroute them to the login page
     return {
       user,
     };
