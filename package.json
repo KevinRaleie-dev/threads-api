@@ -4,12 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "watch": "tsc -w",
     "start": "node dist/main.js",
-    "dev": "nodemon --exec ts-node src/main.ts",
+    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/main.ts",
     "lint": "eslint 'src/**/*.{js,ts}' --quiet --fix",
-    "pretty": "prettier --write '**/*.{js,json}' '!node_modules/**'",
-    "postpretty": "yarn lint --fix",
     "gen": " npx ts-node ./node_modules/.bin/typeorm migration:generate -n UserRefactoring",
     "create": "typeorm migration:create -n ItemRefactoring -d 'src/migrations'",
     "drop-schema": "typeorm schema:drop"
@@ -64,6 +63,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "nodemon": "^2.0.4",
     "prettier": "^2.2.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.1.3"
   }
 }

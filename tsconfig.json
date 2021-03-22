@@ -2,6 +2,10 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
+    "paths": {
+      "@resolvers/*": ["./src/resolvers/*"],
+      "@entities/*": ["./src/entities/*"]
+    },
     "lib": [
       "dom",
       "es6",
