@@ -172,6 +172,7 @@ export class AuthResolver {
       1000 * 60 * 60 * 24 * 1, // a day
     );
 
+    // use this to send email on testing only, use sendgrid in prod
     await sendForgotPasswordEmail(
       email,
       `<a href="http://localhost:8080/change-password/${generatedToken}">Reset password</a>`,

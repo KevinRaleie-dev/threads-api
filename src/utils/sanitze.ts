@@ -1,5 +1,9 @@
 export const sanitize = (input: string): string => {
-  const response = input.toLowerCase().trim();
+  const param = input.toLowerCase().trim();
+  // apparently replaceAll does not work in Node just yet, will use it at a later stage
+  // const output = param.replaceAll(' ', '-');
 
-  return response;
+  const output = param.split(' ').join('-');
+
+  return output;
 };
