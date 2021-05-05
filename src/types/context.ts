@@ -6,4 +6,5 @@ export interface AppContext {
   req: Request & { session: any };
   res: Response;
   redis: Redis;
+  payload?: { id: string };
 }
