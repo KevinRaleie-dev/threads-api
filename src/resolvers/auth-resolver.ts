@@ -10,6 +10,7 @@ import { validationSchema } from '../responses/validation-schema';
 import { FORGOT_PASSWORD } from '../utils/constants';
 import { sendForgotPasswordEmail } from '../utils/sendEmails';
 import { sanitize } from '../utils/sanitze';
+import { createAccessToken } from '../utils/token';
 
 @Resolver()
 export class AuthResolver {
@@ -119,8 +120,11 @@ export class AuthResolver {
     // Add the cookie
     req.session.userId = user.id;
 
+    // return an access token here
+
     return {
       user,
+      accessToken: createAccessToken(user),
     };
   }
 
