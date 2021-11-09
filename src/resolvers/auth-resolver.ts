@@ -87,8 +87,8 @@ export class AuthResolver {
     };
   }
 
-  @Mutation(() => AuthResponse)
-  async login(@Arg('data') data: LoginUserInput, @Ctx() { req }: AppContext): Promise<AuthResponse> {
+  @Mutation(() => AuthResponse, { nullable: true })
+  async login(@Arg('data') data: LoginUserInput, @Ctx() { req }: AppContext): Promise<AuthResponse | undefined> {
     const user = await User.findByEmail(data.email);
 
     if (!user) {
@@ -115,17 +115,23 @@ export class AuthResolver {
       };
     }
 
-    // if everything matches, supply the user with a cookie
-
-    // Add the cookie
-    req.session.userId = user.id;
-
-    // return an access token here
-
-    return {
-      user,
-      accessToken: createAccessToken(user),
-    };
+    switch (data.platform) {
+      case 'Web': // if user logs in from the web, issue a cookie
+        req.session.userId = user.id;
+        return {
+          user,
+        };
+        break;
+      case 'Mobile': // if user logs in from mobile, issue a token
+        return {
+          user,
+          accessToken: createAccessToken(user),
+        };
+        break;
+      default:
+        return undefined;
+        break;
+    }
   }
 
   @Mutation(() => Boolean)
